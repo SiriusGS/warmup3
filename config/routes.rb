@@ -1,5 +1,5 @@
 Warmup3::Application.routes.draw do
-  root 'users#index'
+  root 'users#webpage'
   post '/users/add' => 'users#add'
   post '/users/login' => 'users#login'
   post '/TESTAPI/resetFixture' => 'users#resetFixture'

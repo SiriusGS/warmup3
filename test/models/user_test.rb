@@ -1,14 +1,12 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
-    SUCCESS               =   1
-    ERR_BAD_CREDENTIALS   =  -1
-    ERR_USER_EXISTS       =  -2
-    ERR_BAD_USERNAME      =  -3
-    ERR_BAD_PASSWORD      =  -4
+  
+    SUCCESS = 1
+    ERR_BAD_CREDENTIALS = -1
+    ERR_USER_EXISTS = -2
+    ERR_BAD_USERNAME = -3
+    ERR_BAD_PASSWORD = -4
 
     test "reset: Delete All Users" do
         code = User.add("u1","p1")
@@ -17,67 +15,67 @@ class UserTest < ActiveSupport::TestCase
         assert User.all == [], "Delete failed"
     end
 
-    test "add: User Exists1" do
+    test "add Duplicate User with same password" do
         User.TESTAPI_resetFixture
-        code = User.add("u1","p1")
+        code = User.add("u","p")
         assert code == SUCCESS, "Adding user failed"
-        code = User.add("u1", "p1")
+        code = User.add("u", "p")
         assert code == ERR_USER_EXISTS, "Adding exist user"
     end
 
-    test "add: User Exists2" do
+    test "add Duplicate user with diff password" do
         User.TESTAPI_resetFixture
-        code = User.add("u1","p1")
+        code = User.add("u","p")
         assert code == SUCCESS, "Adding user failed"
-        code = User.add("u1", "p2")
+        code = User.add("u", "pp")
         assert code == ERR_USER_EXISTS, "Adding exist user"
     end
 
-    test "add: Bad Username1" do
+    test "add Blank Username" do
         User.TESTAPI_resetFixture
-        code = User.add("", "p2")
-        assert code == ERR_BAD_USERNAME, "Adding user with bad username"
+        code = User.add("", "p")
+        assert code == ERR_BAD_USERNAME, "Adding user with blank username"
     end
 
-    test "add: Bad Username2" do
+    test "add too long Username" do
         User.TESTAPI_resetFixture
         code = User.add("u"*129, "p2")
-        assert code == ERR_BAD_USERNAME, "Adding user with bad username"
+        assert code == ERR_BAD_USERNAME, "Adding user with too long username"
     end
 
-    test "add: Bad Password1" do
+    test "add too long Password1" do
         User.TESTAPI_resetFixture
-        code = User.add("u1", "12"*200)
+        code = User.add("my", "p"*129)
         assert code == ERR_BAD_PASSWORD, "Adding user with bad password"
     end
 
-    test "add: Bad Password2" do
+    test "add too long Password" do
         User.TESTAPI_resetFixture
-        code = User.add("u1", "p"*129)
+        code = User.add("james", "l"*129)
         assert code == ERR_BAD_PASSWORD, "Adding user with bad password"
     end
 
-    test "login: Count Test" do
+    test "login Count" do
         User.TESTAPI_resetFixture
-        code = User.add("u1","p1")
+        code = User.add("justin","bb")
         assert code == SUCCESS, "Wrong count"
-        code = User.login("u1","p1")
+        code = User.login("justin","bb")
         assert code == 2, "Wrong count"
-        code = User.login("u1","p1")
+        code = User.login("justin","bb")
         assert code == 3, "Wrong count"
     end
 
-    test "login: User not Exists" do
+    test "login User not Exists" do
         User.TESTAPI_resetFixture
-        code = User.login("u1","p1")
-        assert code == ERR_BAD_CREDENTIALS, "Login user that doesn't exist"
+        code = User.login("hi","buddy")
+        assert code == ERR_BAD_CREDENTIALS, "Login user not exist"
     end
 
-    test "login: Wrong Password" do
+    test "login failed" do
         User.TESTAPI_resetFixture
-        code = User.add("u1","p1")
+        code = User.add("hello","world")
         assert code == SUCCESS, "Adding user failed"
-        code = User.login("u1","p2")
-        assert code == ERR_BAD_CREDENTIALS, "Login user with wrong password"
+        code = User.login("hello","all")
+        assert code == ERR_BAD_CREDENTIALS, "Login failed"
     end
 end
